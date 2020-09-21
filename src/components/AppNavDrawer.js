@@ -20,6 +20,13 @@ export default {
 						path: `/problem/${oj}`,
 					})),
 			}, {
+				name: 'Manage',
+				icon: '',
+				children: [{
+					name: 'Cache Status',
+					path: '/cache-status'
+				}]
+			}, {
 				name: 'About Us',
 				icon: '',
 				children: [{
@@ -97,9 +104,7 @@ export default {
 				docked: this.docked,
 				zDepth: this.docked ? 0 : 2
 			},
-			on: {
-				'update:open': (val) => this.$emit('update:open', val)
-			}
+			on: { 'update:open': (val) => this.$emit('update:open', val) }
 		}, [
 			this.createHeader(h),
 			this.createContent(h),

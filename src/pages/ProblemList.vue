@@ -12,6 +12,7 @@
 import axios from "axios";
 
 import config from "../config";
+import storage from "../utils/LocalStorage";
 import Breadcrumbs from "../components/Breadcrumbs";
 import ProblemListViewer from "../components/ProblemListViewer";
 
@@ -21,18 +22,7 @@ export default {
     const { oj } = this.$route.params;
     return {
       oj,
-      breadcrumbs: [
-        {
-          text: "OI Archive",
-          path: "/",
-          disabled: false,
-        },
-        {
-          text: config.oj[oj].name,
-          path: `/problem/${oj}`,
-          disabled: true,
-        },
-      ],
+      breadcrumbs: [],
       list: [],
       source_list: [],
       page: 1,
@@ -50,21 +40,45 @@ export default {
         this.page * this.perpage
       );
     },
+    async fetchData() {
+      return (await axios.get(`${config.oj[this.oj].root}/index.json`)).data;
+    },
+    render: function () {
+      const { oj } = this.$route.params;
+      this.breadcrumbs = [
+        {
+          text: "OI Archive",
+          path: "/",
+          disabled: false,
+        },
+        {
+          text: config.oj[oj].name,
+          path: `/problem/${oj}`,
+          disabled: true,
+        },
+      ];
+      this.$emit("changePageName", config.oj[oj].name);
+      storage
+        .cache(`Data::ProblemList::/problem/${oj}`, this.fetchData())
+        .then((res) => {
+          this.source_list = res.list.map((problem) => ({
+            ...problem,
+            path: `/problem/${oj}/${problem.id}`,
+          }));
+          this.updateList();
+        });
+    },
   },
   mounted: function () {
-    const { oj } = this.$route.params;
-    this.$emit("changePageName", config.oj[oj].name);
-    axios.get(`${config.oj[oj].root}/index.json`).then((res) => {
-      this.source_list = res.data.list.map((problem) => ({
-        ...problem,
-        path: `/problem/${oj}/${problem.id}`,
-      }));
-      this.updateList();
-    });
+    this.render();
   },
   watch: {
     page() {
       this.updateList();
+    },
+    $route() {
+      this.oj = this.$route.params.oj;
+      this.render();
     },
   },
 };

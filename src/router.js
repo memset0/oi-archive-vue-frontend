@@ -5,6 +5,7 @@ Vue.use(VueRouter);
 
 import Home from './pages/Home';
 import Problem from './pages/Problem';
+import CacheStatus from './pages/CacheStatus';
 import ProblemList from './pages/ProblemList';
 
 const routes = [
@@ -22,6 +23,11 @@ const routes = [
 		path: '/problem/:oj/:id',
 		component: Problem,
 		name: 'Problem',
+	},
+	{
+		path: '/cache-status',
+		component: CacheStatus,
+		name: 'CacheStatus',
 	}
 ];
 
