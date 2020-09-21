@@ -31,10 +31,17 @@ export default {
 </script>
 
 <style lang="less">
-.problem-list {
-  td a {
-    color: inherit;
-    text-decoration: none;
+.problem-list.mu-table {
+  tr {
+    height: 36px;
+    min-height: 36px;
+    td {
+      padding: 8px 24px;
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
   }
 }
 </style>
