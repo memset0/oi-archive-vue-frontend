@@ -56,6 +56,7 @@ export default {
   methods: {
     changePageName(name) {
       this.pageName = name;
+      document.title = `${name} - ${config.title}`;
     },
     toggleMenu() {
       this.open = !this.open;
