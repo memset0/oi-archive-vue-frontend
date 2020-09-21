@@ -1,0 +1,127 @@
+<template>
+  <mu-container>
+    <Breadcrumbs :items="breadcrumbs" />
+    <mu-card class="search-form">
+      <mu-form ref="form" :model="form" label-position="top" label-width="100%">
+        <mu-form-item prop="input" label="Search">
+          <mu-text-field v-model="form.input"></mu-text-field>
+        </mu-form-item>
+      </mu-form>
+    </mu-card>
+    <ProblemListViewer :list="list" :showOJ="true" />
+    <mu-flex justify-content="center" style="margin: 32px 0;">
+      <mu-pagination raised :total="source_list.length" :current.sync="page" :page-size="perpage"></mu-pagination>
+    </mu-flex>
+  </mu-container>
+</template>
+
+<script>
+import config from "../config";
+import storage from "../utils/LocalStorage";
+import Breadcrumbs from "../components/Breadcrumbs";
+import ProblemListViewer from "../components/ProblemListViewer";
+
+export default {
+  name: "ProblemList",
+  data() {
+    const { keyword } = this.$route.params;
+    return {
+      keyword,
+      breadcrumbs: [],
+      source_list: [],
+      list: [],
+      page: 1,
+      perpage: 50,
+      form: {
+        input: keyword,
+      },
+    };
+  },
+  components: {
+    Breadcrumbs,
+    ProblemListViewer,
+  },
+  methods: {
+    updateList() {
+      this.list = this.source_list.slice(
+        (this.page - 1) * this.perpage,
+        this.page * this.perpage
+      );
+    },
+    render: function () {
+      const keyword = this.$route.params.keyword || "";
+      this.keyword = keyword;
+      this.form.input = keyword;
+      if (keyword) {
+        const keywordTemp = keyword.toUpperCase();
+        let result = [];
+        let missedOJ = [];
+        for (let oj of Object.keys(config.oj)) {
+          let data = storage.getCacheItem(`Data::ProblemList::/problem/${oj}`);
+          if (data) {
+            for (let problem of data.list) {
+              if (problem.title.toUpperCase().indexOf(keywordTemp) != -1) {
+                result.push({
+                  ...problem,
+                  oj,
+                  path: `/problem/${oj}/${problem.id}`,
+                });
+              }
+            }
+          } else {
+            missedOJ.push(config.oj[oj].name);
+          }
+        }
+        this.source_list = result;
+        this.updateList();
+      } else {
+        this.source_list = [];
+        this.updateList();
+      }
+      this.$emit("changePageName", keyword ? `Search: ${keyword}` : "Search");
+      this.breadcrumbs = [
+        {
+          text: "OI Archive",
+          path: "/",
+          disabled: false,
+        },
+        {
+          text: keyword ? `Search: ${keyword}` : "Search",
+          path: keyword ? `/search/${keyword}` : "/search",
+          disabled: true,
+        },
+      ];
+    },
+  },
+  mounted: function () {
+    this.render();
+  },
+  watch: {
+    page() {
+      this.updateList();
+    },
+    $route() {
+      const { keyword } = this.$route.params;
+      console.log("[router changed]", keyword);
+      this.render();
+    },
+    "form.input": function () {
+      const keyword = this.form.input;
+      console.log("[form changed]", keyword);
+      this.$router.push({ path: `/search/${keyword}` });
+      this.render();
+    },
+  },
+};
+</script>
+
+<style lang="less">
+.search-form {
+  padding: 20px;
+  margin-bottom: 20px;
+  .mu-form-item {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+  }
+}
+</style>

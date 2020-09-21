@@ -20,6 +20,13 @@ export default {
 						path: `/problem/${oj}`,
 					})),
 			}, {
+				name: 'Tools',
+				icon: '',
+				children: [{
+					name: 'Search',
+					path: '/search'
+				}]
+			}, {
 				name: 'Manage',
 				icon: '',
 				children: [{

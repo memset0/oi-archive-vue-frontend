@@ -2,6 +2,9 @@
   <mu-card>
     <mu-data-table :columns="columns" :data="list" class="problem-list">
       <template slot-scope="scope">
+        <td v-if="showOJ" class="is-right">
+          <a :href="scope.row.link" target="_blank">{{ config.oj[scope.row.oj].name }}</a>
+        </td>
         <td class="is-right">
           <a :href="scope.row.link" target="_blank">{{ scope.row.id }}</a>
         </td>
@@ -14,17 +17,30 @@
 </template>
 
 <script>
+import config from "../config";
+
 export default {
   name: "Problem",
   props: {
     list: Array,
+    showOJ: Boolean,
   },
   data() {
+    const columns = this.showOJ
+      ? [
+          { title: "OJ", width: 100, name: "oj", align: "right" },
+          { title: "ID", width: 120, name: "id", align: "right" },
+          { title: "Title", name: "title", align: "left" },
+        ]
+      : [
+          { title: "ID", width: 120, name: "id", align: "right" },
+          { title: "Title", name: "title", align: "left" },
+        ];
     return {
-      columns: [
-        { title: "ID", width: 120, name: "id", align: "right" },
-        { title: "Title", name: "title", align: "left" },
-      ],
+      columns,
+      config: {
+        oj: config.oj,
+      },
     };
   },
 };

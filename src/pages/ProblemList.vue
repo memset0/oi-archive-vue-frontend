@@ -10,7 +10,6 @@
 
 <script>
 import axios from "axios";
-
 import config from "../config";
 import storage from "../utils/LocalStorage";
 import Breadcrumbs from "../components/Breadcrumbs";

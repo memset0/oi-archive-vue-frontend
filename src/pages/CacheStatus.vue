@@ -20,7 +20,7 @@
           </mu-card-text>
           <mu-card-actions>
             <mu-button :href="'https://' + ojList[oj].domain" target="_blank" flat>原网站</mu-button>
-            <mu-button :href="ojList[oj].root + '/index.json'" target="_blank" flat>Archive 数据文件</mu-button>
+            <mu-button :href="ojList[oj].root + '/index.json'" target="_blank" flat>数据文件</mu-button>
           </mu-card-actions>
         </mu-card>
       </mu-col>
