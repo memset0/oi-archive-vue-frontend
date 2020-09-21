@@ -1,9 +1,10 @@
 import katex from "katex";
+import utils from "../utils";
 
 const specialCharacters = ['<', '>'];
 
 function render(content, display) {
-	return katex.renderToString(content, {
+	return katex.renderToString(utils.decodeHTML(content), {
 		displayMode: display,
 		throwOnError: false,
 		strict: false,
