@@ -1,10 +1,10 @@
 import katex from "katex";
-import utils from "../utils";
+import lodash from "lodash";
 
 const specialCharacters = ['<', '>'];
 
 function render(content, display) {
-	return katex.renderToString(utils.decodeHTML(content), {
+	return katex.renderToString(lodash.unescape(content), {
 		displayMode: display,
 		throwOnError: false,
 		strict: false,
