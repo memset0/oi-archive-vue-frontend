@@ -24,7 +24,7 @@ export default {
       breadcrumbs: [],
       list: [],
       source_list: [],
-      page: 1,
+      page: this.$route.query.page || 1,
       perpage: 50,
     };
   },
@@ -73,6 +73,7 @@ export default {
   },
   watch: {
     page() {
+      this.$router.push({ query: { page: this.page } });
       this.updateList();
     },
     $route() {
