@@ -24,7 +24,7 @@ import ProblemListViewer from "../components/ProblemListViewer";
 export default {
   name: "ProblemList",
   data() {
-    const { keyword } = this.$route.params;
+    const keyword = decodeURIComponent(this.$route.params.keyword || "");
     return {
       keyword,
       breadcrumbs: [],
@@ -32,6 +32,7 @@ export default {
       list: [],
       page: 1,
       perpage: 50,
+      lastKeyword: null,
       form: {
         input: keyword,
       },
@@ -48,10 +49,11 @@ export default {
         this.page * this.perpage
       );
     },
-    render: function () {
-      const keyword = this.$route.params.keyword || "";
-      this.keyword = keyword;
-      this.form.input = keyword;
+    render: async function () {
+      const keyword = decodeURIComponent(this.$route.params.keyword || "");
+      if (keyword == this.lastKeyword) {
+        return false;
+      }
       if (keyword) {
         const keywordTemp = keyword.toUpperCase();
         let result = [];
@@ -78,6 +80,7 @@ export default {
         this.source_list = [];
         this.updateList();
       }
+      this.lastKeyword = keyword;
       this.$emit("changePageName", keyword ? `Search: ${keyword}` : "Search");
       this.breadcrumbs = [
         {
@@ -101,14 +104,15 @@ export default {
       this.updateList();
     },
     $route() {
-      const { keyword } = this.$route.params;
+      const keyword = decodeURIComponent(this.$route.params.keyword || "");
       console.log("[router changed]", keyword);
+      this.form.input = keyword;
       this.render();
     },
     "form.input": function () {
-      const keyword = this.form.input;
+      const keyword = this.form.input || "";
       console.log("[form changed]", keyword);
-      this.$router.push({ path: `/search/${keyword}` });
+      this.$router.push({ path: `/search/${encodeURIComponent(keyword)}` });
       this.render();
     },
   },
