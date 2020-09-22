@@ -21,6 +21,7 @@ export default {
     const { oj } = this.$route.params;
     return {
       oj,
+      lastOJ: null,
       breadcrumbs: [],
       list: [],
       source_list: [],
@@ -44,28 +45,32 @@ export default {
     },
     render: function () {
       const { oj } = this.$route.params;
-      this.breadcrumbs = [
-        {
-          text: "OI Archive",
-          path: "/",
-          disabled: false,
-        },
-        {
-          text: config.oj[oj].name,
-          path: `/problem/${oj}`,
-          disabled: true,
-        },
-      ];
-      this.$emit("changePageName", config.oj[oj].name);
-      storage
-        .cache(`Data::ProblemList::/problem/${oj}`, this.fetchData())
-        .then((res) => {
-          this.source_list = res.list.map((problem) => ({
-            ...problem,
-            path: `/problem/${oj}/${problem.id}`,
-          }));
-          this.updateList();
-        });
+      if (oj != this.lastOJ) {
+        this.page = this.$route.query.page || 1;
+        this.breadcrumbs = [
+          {
+            text: "OI Archive",
+            path: "/",
+            disabled: false,
+          },
+          {
+            text: config.oj[oj].name,
+            path: `/problem/${oj}`,
+            disabled: true,
+          },
+        ];
+        this.$emit("changePageName", config.oj[oj].name);
+        storage
+          .cache(`Data::ProblemList::/problem/${oj}`, this.fetchData())
+          .then((res) => {
+            this.source_list = res.list.map((problem) => ({
+              ...problem,
+              path: `/problem/${oj}/${problem.id}`,
+            }));
+            this.updateList();
+          });
+        this.lastOJ = oj;
+      }
     },
   },
   mounted: function () {
@@ -73,7 +78,11 @@ export default {
   },
   watch: {
     page() {
-      this.$router.push({ query: { page: this.page } });
+      if (this.page > 1) {
+        this.$router.push({ query: { page: this.page } });
+      } else {
+        this.$router.push({ query: {} });
+      }
       this.updateList();
     },
     $route() {
