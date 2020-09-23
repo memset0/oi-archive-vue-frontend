@@ -1,6 +1,6 @@
 <template>
   <mu-card>
-    <mu-data-table :columns="columns" :data="list" class="problem-list">
+    <mu-data-table stripe :columns="columns" :data="list" class="problem-list" rowKey>
       <template slot-scope="scope">
         <td v-if="showOJ" class="is-right">
           <a :href="scope.row.link" target="_blank">{{ config.oj[scope.row.oj].name }}</a>
@@ -38,9 +38,7 @@ export default {
         ];
     return {
       columns,
-      config: {
-        oj: config.oj,
-      },
+      config: { oj: config.oj },
     };
   },
 };

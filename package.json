@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.6.5",
     "fastclick": "^1.0.6",
     "jsonp": "^0.2.1",
@@ -16,6 +17,7 @@
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
     "lodash": "^4.17.20",
+    "lowdb": "^1.0.0",
     "marked": "^1.1.1",
     "muse-ui": "^3.0.2",
     "muse-ui-loading": "^0.2.0",
