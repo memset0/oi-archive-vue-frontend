@@ -2,9 +2,15 @@
   <mu-container>
     <Breadcrumbs :items="breadcrumbs" />
     <mu-card class="cache-status-progress">
-      <mu-flex class="demo-linear-progress">
-        <mu-linear-progress mode="determinate" :value="cachePercent"></mu-linear-progress>
-      </mu-flex>
+      <mu-card-text>
+        <mu-flex class="demo-linear-progress">
+          <mu-linear-progress mode="determinate" :value="cachePercent"></mu-linear-progress>
+        </mu-flex>
+      </mu-card-text>
+      <mu-card-actions>
+        <mu-button color="primary" v-on:click="fetchAll" flat>Fetch All</mu-button>
+        <mu-button color="red" v-on:click="cleanCache" flat>Clean Cache</mu-button>
+      </mu-card-actions>
     </mu-card>
     <mu-row gutter>
       <mu-col span="12" lg="4" md="6" v-for="(_, oj) in ojList" :key="oj" class="home-item-oj">
@@ -29,12 +35,13 @@
 </template>
 
 <script>
+import axios from "axios";
 import config from "../config";
 import storage from "../utils/LocalStorage";
 import Breadcrumbs from "../components/Breadcrumbs";
 
 export default {
-  name: "Status",
+  name: "CacheStatus",
   data() {
     return {
       ojList: config.oj,
@@ -45,7 +52,7 @@ export default {
           disabled: false,
         },
         {
-          text: "Status",
+          text: "Cache Status",
           disabled: true,
         },
       ],
@@ -70,6 +77,25 @@ export default {
       }
       return res;
     },
+    async fetchAll() {
+      await Promise.all(
+        Object.keys(config.oj).map((oj) => {
+          return storage.cache(
+            `Data::ProblemList::/problem/${oj}`,
+            (async () => {
+              return (await axios.get(`${config.oj[oj].root}/index.json`)).data;
+            })()
+          );
+        })
+      );
+      this.render();
+    },
+    cleanCache() {
+      for (let oj of Object.keys(config.oj)) {
+        storage.removeCacheItem(`Data::ProblemList::/problem/${oj}`);
+      }
+      this.render();
+    },
     render: function () {
       this.cacheStatus = this.getCacheStatus();
       let cachedOJ = Object.keys(this.cacheStatus).length;
@@ -78,17 +104,11 @@ export default {
     },
   },
   mounted: function () {
-    this.$emit("changePageName", "Status");
+    this.$emit("changePageName", "Cache Status");
     this.render();
   },
 };
 </script>
-
-<style lang="less">
-.cache-status-progress {
-  padding: 20px;
-}
-</style>
 
 <style lang="less" scoped>
 .mu-card {

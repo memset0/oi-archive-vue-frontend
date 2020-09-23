@@ -8,8 +8,8 @@ export function setItem(name, data) {
 	BaseStorage.setItem(name, JSON.stringify(data));
 }
 
-export function resetItem(name) {
-	BaseStorage.setItem(name, null);
+export function removeItem(name) {
+	BaseStorage.removeItem(name);
 }
 
 export function getCacheItem(name) {
@@ -23,8 +23,8 @@ export function setCacheItem(name, data) {
 	});
 }
 
-export function resetCacheItem(name) {
-	setItem(`Cache::${name}`, null);
+export function removeCacheItem(name) {
+	removeItem(`Cache::${name}`);
 }
 
 export function cache(name, asyncData) {
@@ -43,9 +43,9 @@ export function cache(name, asyncData) {
 export default {
 	getItem,
 	setItem,
-	resetItem,
+	removeItem,
 	getCacheItem,
 	setCacheItem,
-	resetCacheItem,
+	removeCacheItem,
 	cache,
 };
