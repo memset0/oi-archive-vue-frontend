@@ -1,27 +1,29 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+Vue.use(VueRouter);
 
 import MuseUI from 'muse-ui';
-import Loading from 'muse-ui-loading';
-import Progress from 'muse-ui-progress';
-import theme from 'muse-ui/lib/theme';
+import Helpers from 'muse-ui/lib/Helpers';
 import 'muse-ui/dist/muse-ui.css';
-import 'muse-ui-loading/dist/muse-ui-loading.css';
-import 'muse-ui-progress/dist/muse-ui-progress.css';
 
-Vue.use(VueRouter);
-Vue.use(MuseUI);
-Vue.use(Loading);
-Vue.use(Progress, {
-  color: '#6F3381'
-});
-Vue.config.productionTip = false;
-
+import theme from 'muse-ui/lib/theme';
 theme.add('oi-archive', {
   primary: '#B481BB',
   secondary: '#B28FCE',
 }, 'light');
 theme.use('oi-archive');
+
+import Loading from 'muse-ui-loading';
+import Progress from 'muse-ui-progress';
+import 'muse-ui-loading/dist/muse-ui-loading.css';
+import 'muse-ui-progress/dist/muse-ui-progress.css';
+Vue.use(MuseUI);
+Vue.use(Helpers);
+Vue.use(Loading);
+Vue.use(Progress, {
+  color: '#6F3381'
+});
+Vue.config.productionTip = false;
 
 import FastClick from 'fastclick';
 if (navigator && navigator.userAgent.toLowerCase().indexOf('mobile') !== -1) FastClick.attach(document.body);

@@ -5,11 +5,13 @@
       <mu-col span="12" lg="4" md="6" v-for="(_, oj) in oj_list" :key="oj" class="home-item-oj">
         <router-link :to="`/problem/${oj}`">
           <mu-card>
-            <mu-card-header :title="oj_list[oj].name" :sub-title="oj_list[oj].domain">
-              <mu-avatar slot="avatar">
-                <img :src="oj_list[oj].favicon" style="background: #fff" />
-              </mu-avatar>
-            </mu-card-header>
+            <mu-ripple>
+              <mu-card-header :title="oj_list[oj].name" :sub-title="oj_list[oj].domain">
+                <mu-avatar slot="avatar">
+                  <img :src="oj_list[oj].favicon" style="background: #fff" />
+                </mu-avatar>
+              </mu-card-header>
+            </mu-ripple>
           </mu-card>
         </router-link>
       </mu-col>

@@ -1,5 +1,3 @@
-import MuseUI from 'muse-ui';
-
 import config from '../config';
 
 export default {
@@ -10,7 +8,6 @@ export default {
 	},
 	data() {
 		return {
-			version: MuseUI.version,
 			navConfig: [{
 				name: 'Online Judge',
 				icon: 'explore',

@@ -108,17 +108,7 @@ export default {
     cursor: pointer;
     &:hover {
       text-decoration: underline;
-      color: @primaryColor;
-    }
-  }
-  .mu-app-version {
-    line-height: 1;
-    font-size: 12px;
-    margin-top: 4px;
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;
-      color: @primaryColor;
+      color: #B481BB;
     }
   }
 }
