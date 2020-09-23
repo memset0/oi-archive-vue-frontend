@@ -8,6 +8,14 @@
         </mu-form-item>
       </mu-form>
     </mu-card>
+    <mu-alert color="error" v-if="missedOJ.length">
+      OI Archive
+      <sup>β</sup>
+      的搜索功能基于前端的
+      <router-link to="/cache-status">本地缓存</router-link>。以下 Online Judge 的数据没有被缓存，他们将不会出现在搜索结果中：
+      <br />
+      {{ missedOJ.map(oj => config.oj[oj].name).join('，') }}。
+    </mu-alert>
     <ProblemListViewer :list="list" :showOJ="true" />
     <mu-flex justify-content="center" style="margin: 32px 0;">
       <mu-pagination raised :total="source_list.length" :current.sync="page" :page-size="perpage"></mu-pagination>
@@ -26,16 +34,16 @@ export default {
   data() {
     const keyword = decodeURIComponent(this.$route.params.keyword || "");
     return {
+      config,
       keyword,
       breadcrumbs: [],
+      missedOJ: [],
       source_list: [],
       list: [],
       page: 1,
       perpage: 50,
       lastKeyword: null,
-      form: {
-        input: keyword,
-      },
+      form: { input: keyword },
     };
   },
   components: {
@@ -71,13 +79,15 @@ export default {
               }
             }
           } else {
-            missedOJ.push(config.oj[oj].name);
+            missedOJ.push(oj);
           }
         }
         this.source_list = result;
+        this.missedOJ = missedOJ;
         this.updateList();
       } else {
         this.source_list = [];
+        this.missedOJ = [];
         this.updateList();
       }
       this.lastKeyword = keyword;
@@ -119,13 +129,22 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .search-form {
   padding: 20px;
   margin-bottom: 20px;
   .mu-form-item {
     margin-bottom: 0px;
     padding-bottom: 0px;
+  }
+}
+.mu-alert {
+  margin-bottom: 20px;
+  display: block;
+  a {
+    color: inherit;
+    font-weight: bold;
+    text-decoration: underline;
   }
 }
 </style>
