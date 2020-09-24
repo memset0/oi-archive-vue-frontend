@@ -27,14 +27,16 @@ export function removeCacheItem(name) {
 	removeItem(`Cache::${name}`);
 }
 
-export function cache(name, asyncData) {
+export function cache(name, asyncMethod, reFetch = true) {
 	return (async () => {
 		let data;
 		if (getItem(`Cache::${name}`)) {
 			data = getCacheItem(name);
-			(async () => setCacheItem(name, await asyncData))();
+			if (reFetch) {
+				(async () => setCacheItem(name, await asyncMethod()))();
+			}
 		} else {
-			setCacheItem(name, data = await asyncData);
+			setCacheItem(name, data = await asyncMethod());
 		}
 		return data;
 	})();

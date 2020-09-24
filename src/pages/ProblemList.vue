@@ -66,12 +66,11 @@ export default {
         ];
         this.$emit("changePageName", config.oj[oj].name);
         storage
-          .cache(`Data::ProblemList::/problem/${oj}`, this.fetchData())
+          .cache(`Data::ProblemList::/problem/${oj}`, this.fetchData)
           .then((res) => {
             this.source_list = res.list.map((problem) => ({
               ...problem,
               oj: oj,
-              path: `/problem/${oj}/${problem.id}`,
             }));
             this.updateList();
             this.load = true;

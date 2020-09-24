@@ -82,9 +82,9 @@ export default {
         Object.keys(config.oj).map((oj) => {
           return storage.cache(
             `Data::ProblemList::/problem/${oj}`,
-            (async () => {
+            async () => {
               return (await axios.get(`${config.oj[oj].root}/index.json`)).data;
-            })()
+            }
           );
         })
       );

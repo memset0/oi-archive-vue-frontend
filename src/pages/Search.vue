@@ -1,26 +1,28 @@
 <template>
-  <mu-container>
-    <Breadcrumbs :items="breadcrumbs" />
-    <mu-card class="search-form">
-      <mu-form ref="form" :model="form" label-position="top" label-width="100%">
-        <mu-form-item prop="input" label="Search">
-          <mu-text-field v-model="form.input"></mu-text-field>
-        </mu-form-item>
-      </mu-form>
-    </mu-card>
-    <mu-alert color="error" v-if="missedOJ.length">
-      OI Archive
-      <sup>β</sup>
-      的搜索功能基于前端的
-      <router-link to="/cache-status">本地缓存</router-link>。以下 Online Judge 的数据没有被缓存，他们将不会出现在搜索结果中：
-      <br />
-      {{ missedOJ.map(oj => config.oj[oj].name).join('，') }}。
-    </mu-alert>
-    <ProblemListViewer :list="list" :showOJ="true" />
-    <mu-flex justify-content="center" style="margin: 32px 0;">
-      <mu-pagination raised :total="source_list.length" :current.sync="page" :page-size="perpage"></mu-pagination>
-    </mu-flex>
-  </mu-container>
+  <div>
+    <mu-container>
+      <Breadcrumbs :items="breadcrumbs" />
+      <mu-card class="search-form">
+        <mu-form ref="form" :model="form" label-position="top" label-width="100%">
+          <mu-form-item prop="input" label="Search">
+            <mu-text-field v-model="form.input"></mu-text-field>
+          </mu-form-item>
+        </mu-form>
+      </mu-card>
+      <mu-alert color="error" v-if="missedOJ.length">
+        OI Archive
+        <sup>β</sup>
+        的搜索功能基于前端的
+        <router-link to="/cache-status">本地缓存</router-link>。以下 Online Judge 的数据没有被缓存，他们将不会出现在搜索结果中：
+        <br />
+        {{ missedOJ.map(oj => config.oj[oj].name).join('，') }}。
+      </mu-alert>
+      <ProblemListViewer :list="list" :showOJ="true" />
+      <mu-flex justify-content="center" style="margin: 32px 0;">
+        <mu-pagination raised :total="source_list.length" :current.sync="page" :page-size="perpage"></mu-pagination>
+      </mu-flex>
+    </mu-container>
+  </div>
 </template>
 
 <script>

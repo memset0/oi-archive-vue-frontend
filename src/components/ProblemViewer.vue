@@ -1,5 +1,5 @@
 <template>
-  <mu-container>
+  <div>
     <div class="problem-viewer">
       <LoadingCard :show="!problem.load" />
       <div class="problem-title" v-if="problem.load">{{ problem.title }}</div>
@@ -7,33 +7,49 @@
         <mu-badge v-if="problem.time_limit" :content="problem.time_limit + ' ms'"></mu-badge>
         <mu-badge v-if="problem.memory_limit" :content="problem.memory_limit + ' MB'"></mu-badge>
       </div>
-      <div class="problem-operation" v-if="problem.load && problem.operation">
+      <div class="problem-operation" v-if="problem.load ">
         <mu-button
           target="_blank"
-          v-if="problem.operation.submit"
+          v-if="problem.operation && problem.operation.submit"
           :href="problem.operation.submit"
           color="primary"
         >submit</mu-button>
         <mu-button
           target="_blank"
-          v-if="problem.operation.submissions"
+          v-if="problem.operation && problem.operation.submissions"
           :href="problem.operation.submissions"
         >submissions</mu-button>
         <mu-button
           target="_blank"
-          v-if="problem.operation.statistics"
+          v-if="problem.operation && problem.operation.statistics"
           :href="problem.operation.statistics"
         >statistics</mu-button>
         <mu-button
           target="_blank"
-          v-if="problem.operation.discussion"
+          v-if="problem.operation && problem.operation.discussion"
           :href="problem.operation.discussion"
         >discussion</mu-button>
         <mu-button
           target="_blank"
-          v-if="problem.operation.testdata"
+          v-if="problem.operation && problem.operation.testdata"
           :href="problem.operation.testdata"
         >testdata</mu-button>
+        <a type="button" class="mu-button mu-raised-button status-favorite-button">
+          <div
+            class="mu-button-wrapper mu-primary-text-color"
+            v-on:click="toggleAccepted"
+            :style="status.accepted.style"
+          >
+            <i class="mu-icon material-icons">{{ status.accepted.icon }}</i>
+          </div>
+          <div
+            class="mu-button-wrapper mu-primary-text-color"
+            v-on:click="toggleFavorite"
+            :style="status.favorite.style"
+          >
+            <i class="mu-icon material-icons">{{ status.favorite.icon }}</i>
+          </div>
+        </a>
       </div>
       <div class="divider" style="height: 12px;"></div>
       <div class="problem-section" v-for="(_, i) in problem.statement" :key="i">
@@ -61,13 +77,15 @@
         >Close</mu-button>
       </mu-snackbar>
     </mu-expansion-panel>
-  </mu-container>
+  </div>
 </template>
 
 <script>
 import copyToClipboard from "copy-to-clipboard";
+import * as colors from "muse-ui/lib/theme/colors";
 import turndown from "../utils/turndown";
 import LoadingCard from "../components/LoadingCard";
+import db from "../utils/database";
 
 export default {
   name: "ProblemViewer",
@@ -76,18 +94,6 @@ export default {
   },
   props: {
     problem: Object,
-  },
-  data: function () {
-    return {
-      exportStatement: {
-        titleWeight: 2,
-        snackbar: {
-          open: false,
-          message: "",
-          timeout: 3000,
-        },
-      },
-    };
   },
   methods: {
     copyStatement: function () {
@@ -114,6 +120,71 @@ export default {
         this.exportStatement.snackbar.open = false;
       }, this.exportStatement.snackbar.timeout);
       copyToClipboard(content);
+    },
+    getStatus: function () {
+      const status = db.get("problem").queryProblem(this.problem).value();
+      this.status = {
+        accepted: {
+          value: status?.ac ? true : false,
+          icon: status?.ac ? "check_circle" : "check_circle_outline",
+          style: status?.ac ? { color: colors.green } : {},
+        },
+        favorite: {
+          value: status?.fav ? true : false,
+          icon: status?.fav ? "favorite" : "favorite_border",
+          style: status?.fav ? { color: colors.red } : {},
+        },
+      };
+    },
+    toggleAccepted: function () {
+      db.get("problem")
+        .updateProblem(this.problem, {
+          ac: this.status.accepted.value ^ 1,
+        })
+        .write();
+      this.getStatus();
+      console.log(db.get("problem").value());
+    },
+    toggleFavorite: function () {
+      db.get("problem")
+        .updateProblem(this.problem, {
+          fav: this.status.favorite.value ^ 1,
+        })
+        .write();
+      this.getStatus();
+      console.log(db.get("problem").value());
+    },
+  },
+  data: function () {
+    return {
+      exportStatement: {
+        titleWeight: 2,
+        snackbar: {
+          open: false,
+          message: "",
+          timeout: 3000,
+        },
+      },
+      status: {
+        accepted: {
+          value: false,
+          icon: "check_circle_outline",
+          status: {},
+        },
+        favorite: {
+          value: false,
+          icon: "favorite_border",
+          status: {},
+        },
+      },
+    };
+  },
+  mounted: function () {
+    this.getStatus();
+  },
+  watch: {
+    problem: function () {
+      this.getStatus();
     },
   },
 };
@@ -173,6 +244,17 @@ export default {
     padding: 0;
     margin: 16px;
     font-size: 15px;
+  }
+}
+</style>
+
+<style lang="less">
+.status-favorite-button {
+  width: 72px;
+  min-width: 72px;
+  .mu-button-wrapper {
+    width: 36px;
+    display: inline-flex;
   }
 }
 </style>

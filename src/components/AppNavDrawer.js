@@ -17,6 +17,16 @@ export default {
 						path: `/problem/${oj}`,
 					})),
 			}, {
+				name: 'Problem Sets',
+				icon: '',
+				children: [{
+					name: 'Accepted Problems',
+					path: '/set/accepted'
+				}, {
+					name: 'Favorite Problems',
+					path: '/set/favorite'
+				}]
+			}, {
 				name: 'Tools',
 				icon: '',
 				children: [{

@@ -55,6 +55,8 @@ export default {
     },
     render() {
       const { oj, id } = this.$route.params;
+      this.oj = oj;
+      this.id = id;
       this.$emit(
         "changePageName",
         `${config.oj[oj].name}${isNaN(id) ? " " : ""}${id}`
@@ -92,8 +94,6 @@ export default {
   },
   watch: {
     $route() {
-      this.oj = this.$route.params.oj;
-      this.id = this.$route.params.id;
       this.render();
     },
   },

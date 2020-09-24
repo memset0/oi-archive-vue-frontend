@@ -6,6 +6,7 @@ Vue.use(VueRouter);
 import Home from './pages/Home';
 import Search from './pages/Search';
 import Problem from './pages/Problem';
+import ProblemSet from './pages/ProblemSet';
 import CacheStatus from './pages/CacheStatus';
 import ProblemList from './pages/ProblemList';
 
@@ -39,7 +40,12 @@ const routes = [
 		path: '/cache-status',
 		component: CacheStatus,
 		name: 'CacheStatus',
-	}
+	},
+	{
+		path: '/set/:type',
+		component: ProblemSet,
+		name: 'ProblemSet',
+	},
 ];
 
 export default new VueRouter({
