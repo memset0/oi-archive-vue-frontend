@@ -1,19 +1,21 @@
 <template>
-  <mu-card>
-    <mu-data-table stripe :columns="columns" :data="list" class="problem-list" rowKey>
-      <template slot-scope="scope">
-        <td v-if="showOJ" class="is-right">
-          <a :href="scope.row.link" target="_blank">{{ config.oj[scope.row.oj].name }}</a>
-        </td>
-        <td class="is-right">
-          <a :href="scope.row.link" target="_blank">{{ scope.row.id }}</a>
-        </td>
-        <td class="is-left">
-          <router-link :to="scope.row.path">{{ scope.row.title }}</router-link>
-        </td>
-      </template>
-    </mu-data-table>
-  </mu-card>
+  <mu-container>
+    <mu-card>
+      <mu-data-table stripe :columns="columns" :data="list" class="problem-list" rowKey>
+        <template slot-scope="scope">
+          <td v-if="showOJ" class="is-right">
+            <a :href="scope.row.link" target="_blank">{{ config.oj[scope.row.oj].name }}</a>
+          </td>
+          <td class="is-right">
+            <a :href="scope.row.link" target="_blank">{{ scope.row.id }}</a>
+          </td>
+          <td class="is-left">
+            <router-link :to="scope.row.path">{{ scope.row.title }}</router-link>
+          </td>
+        </template>
+      </mu-data-table>
+    </mu-card>
+  </mu-container>
 </template>
 
 <script>

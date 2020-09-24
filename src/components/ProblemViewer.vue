@@ -1,9 +1,7 @@
 <template>
   <mu-container>
     <div class="problem-viewer">
-      <div class="problem-loading" v-if="!problem.load">
-        <mu-card data-mu-loading-color="#B28FCE" v-loading="true"></mu-card>
-      </div>
+      <LoadingCard :show="!problem.load" />
       <div class="problem-title" v-if="problem.load">{{ problem.title }}</div>
       <div class="problem-tags" v-if="problem.load && (problem.time_limit || problem.memory_limit)">
         <mu-badge v-if="problem.time_limit" :content="problem.time_limit + ' ms'"></mu-badge>
@@ -67,25 +65,20 @@
 </template>
 
 <script>
-import axios from "axios";
-import lodash from "lodash";
 import copyToClipboard from "copy-to-clipboard";
-import markdown from "../utils/markdown";
-import katex from "../utils/katex";
-
-import config from "../config";
+import turndown from "../utils/turndown";
+import LoadingCard from "../components/LoadingCard";
 
 export default {
   name: "ProblemViewer",
+  components: {
+    LoadingCard,
+  },
+  props: {
+    problem: Object,
+  },
   data: function () {
-    const { oj, id } = this.$route.params;
     return {
-      problem: {
-        load: false, // debug: disable loading components
-        oj,
-        id,
-        statement: [],
-      },
       exportStatement: {
         titleWeight: 2,
         snackbar: {
@@ -105,7 +98,12 @@ export default {
       }
       for (let section of this.problem.source_statement) {
         content += prefix + " " + section.title + "\n\n";
-        content += section.content + "\n\n";
+        if (section.format == "markdown") {
+          content += section.content + "\n\n\n";
+        } else if (section.format == "html") {
+          console.log(section.content);
+          content += turndown(section.content) + "\n\n\n";
+        }
       }
       this.exportStatement.snackbar.message = "成功复制到剪贴板！";
       if (this.exportStatement.snackbar.timer) {
@@ -117,28 +115,6 @@ export default {
       }, this.exportStatement.snackbar.timeout);
       copyToClipboard(content);
     },
-  },
-  mounted: function () {
-    const { oj, id } = this.$route.params;
-    axios.get(`${config.oj[oj].root}/problem/${id}.json`).then((res) => {
-      this.problem = {
-        ...this.problem,
-        ...res.data,
-      };
-      this.$emit("updateProblemData", this.problem);
-      this.problem.source_statement = lodash.cloneDeep(this.problem.statement);
-      this.problem.statement = this.problem.statement.map((section) => {
-        if (section.format == "markdown") {
-          section.content = markdown(section.content);
-        }
-        if (section.require?.includes("katex")) {
-          section.content = katex(section.content);
-        }
-        return section;
-      });
-      console.log(this.problem);
-      this.problem.load = true;
-    });
   },
 };
 </script>

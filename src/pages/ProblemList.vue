@@ -1,8 +1,9 @@
 <template>
   <mu-container>
     <Breadcrumbs :items="breadcrumbs" />
-    <ProblemListViewer :list="list" />
-    <mu-flex justify-content="center" style="margin: 32px 0;">
+    <LoadingCard :show="!load" />
+    <ProblemListViewer :list="list" v-if="load" />
+    <mu-flex justify-content="center" style="margin: 32px 0;" v-if="load">
       <mu-pagination raised :total="source_list.length" :current.sync="page" :page-size="perpage"></mu-pagination>
     </mu-flex>
   </mu-container>
@@ -13,6 +14,7 @@ import axios from "axios";
 import config from "../config";
 import storage from "../utils/LocalStorage";
 import Breadcrumbs from "../components/Breadcrumbs";
+import LoadingCard from "../components/LoadingCard";
 import ProblemListViewer from "../components/ProblemListViewer";
 
 export default {
@@ -21,6 +23,7 @@ export default {
     const { oj } = this.$route.params;
     return {
       oj,
+      load: false,
       lastOJ: null,
       breadcrumbs: [],
       list: [],
@@ -31,6 +34,7 @@ export default {
   },
   components: {
     Breadcrumbs,
+    LoadingCard,
     ProblemListViewer,
   },
   methods: {
@@ -46,6 +50,7 @@ export default {
     render: function () {
       const { oj } = this.$route.params;
       if (oj != this.lastOJ) {
+        this.load = false;
         this.page = this.$route.query.page || 1;
         this.breadcrumbs = [
           {
@@ -65,9 +70,11 @@ export default {
           .then((res) => {
             this.source_list = res.list.map((problem) => ({
               ...problem,
+              oj: oj,
               path: `/problem/${oj}/${problem.id}`,
             }));
             this.updateList();
+            this.load = true;
           });
         this.lastOJ = oj;
       }
