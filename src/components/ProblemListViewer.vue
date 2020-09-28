@@ -177,7 +177,7 @@ export default {
     height: 36px;
     min-height: 36px;
     td {
-      padding: 8px 16px;
+      padding: 6px 16px;
       a {
         color: inherit;
         text-decoration: none;
