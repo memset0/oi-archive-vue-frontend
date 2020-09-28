@@ -64,7 +64,6 @@
     </div>
     <mu-expansion-panel :zDepth="1" v-if="problem.load">
       <div slot="header">导出题面</div>导出题面以在其他场合使用。（正在开发中...）
-      <br />紧急上线了，因为小懒虫 jerome_wei 急着用。
       <mu-button slot="action" color="primary" v-on:click="copyStatement" flat>export</mu-button>
       <mu-snackbar color="success" :open.sync="exportStatement.snackbar.open">
         <mu-icon left value="check_circle"></mu-icon>
@@ -143,7 +142,6 @@ export default {
         })
         .write();
       this.getStatus();
-      console.log(db.get("problem").value());
     },
     toggleFavorite: function () {
       db.get("problem")
@@ -152,7 +150,6 @@ export default {
         })
         .write();
       this.getStatus();
-      console.log(db.get("problem").value());
     },
   },
   data: function () {
