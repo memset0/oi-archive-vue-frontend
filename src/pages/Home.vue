@@ -1,6 +1,9 @@
 <template>
   <mu-container>
     <Breadcrumbs :items="breadcrumbs" />
+    <mu-card class="content">
+      <mu-card-text v-html="content"></mu-card-text>
+    </mu-card>
     <mu-row gutter>
       <mu-col span="12" lg="4" md="6" v-for="(_, oj) in oj_list" :key="oj" class="home-item-oj">
         <router-link :to="`/problem/${oj}`">
@@ -21,6 +24,7 @@
 
 <script>
 import config from "../config";
+import Content from "../pages/blog/home";
 import Breadcrumbs from "../components/Breadcrumbs";
 
 export default {
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       oj_list: config.oj,
+      content: Content,
       breadcrumbs: [
         {
           text: "OI Archive",
@@ -61,5 +66,12 @@ export default {
     }
   }
   margin-bottom: 20px;
+}
+.content {
+  margin-bottom: 20px;
+  .mu-card-text {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
 }
 </style>
