@@ -14,12 +14,15 @@ theme.add('oi-archive', {
 theme.use('oi-archive');
 
 import Loading from 'muse-ui-loading';
+import Message from 'muse-ui-message';
 import Progress from 'muse-ui-progress';
 import 'muse-ui-loading/dist/muse-ui-loading.css';
+import 'muse-ui-message/dist/muse-ui-message.css';
 import 'muse-ui-progress/dist/muse-ui-progress.css';
 Vue.use(MuseUI);
 Vue.use(Helpers);
 Vue.use(Loading);
+Vue.use(Message);
 Vue.use(Progress, {
   color: '#6F3381'
 });

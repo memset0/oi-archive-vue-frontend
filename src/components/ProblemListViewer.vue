@@ -105,6 +105,7 @@ export default {
     },
     queryStatus(oj, id) {
       const status = db.get("problem").queryProblem({ oj, id }).value();
+      console.log('[query-status]', oj, id);
       return {
         accepted: status?.ac ? true : false,
         favorite: status?.fav ? true : false,

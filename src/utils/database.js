@@ -20,7 +20,10 @@ db._.mixin({
 			}
 		}
 		array.push({
-			problem,
+			problem: {
+				oj: problem.oj,
+				id: problem.id,
+			},
 			status
 		});
 	},
